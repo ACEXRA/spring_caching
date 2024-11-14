@@ -1,8 +1,17 @@
 package com.acexra.demo.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class UserEntity {
 
     @Id
