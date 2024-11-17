@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +18,8 @@ public class UserService {
     private UserRepository userRepository;
 
     @Cacheable(value = "users")
-    public List<UserEntity> getALlUser(){
-        System.out.println(userRepository.findAll());
-        return userRepository.findAll();
+    public Page<UserEntity> getALlUser(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 
     @CachePut(value = "users", key="#user.id")
@@ -29,6 +30,11 @@ public class UserService {
     @Cacheable(value = "users", key = "#id")
     public Optional<UserEntity> getUserById(String id){
         return userRepository.findById(id);
+    }
+
+    public void deleteUser(String id){
+        Optional<UserEntity> userEntity = userRepository.findById(id);
+        userEntity.ifPresent(user -> userRepository.delete(user));
     }
 
     @CacheEvict(value = "users",allEntries = true)

@@ -1,6 +1,10 @@
 package com.acexra.demo.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
@@ -14,8 +18,10 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/getAll")
-    public List<UserEntity> getAllUsers(){
-        return userService.getALlUser();
+    public Page<UserEntity> getAllUsers(@RequestParam(defaultValue = "0")int page,
+                                        @RequestParam(defaultValue = "10")int size){
+        Pageable pageable = PageRequest.of(page,size);
+        return userService.getALlUser(pageable);
     }
 
     @PostMapping("/create")
@@ -26,6 +32,12 @@ public class UserController {
     @GetMapping("/{id}")
     public Optional<UserEntity> getUserById(@PathVariable String id){
         return userService.getUserById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id){
+        userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/clearCache")
